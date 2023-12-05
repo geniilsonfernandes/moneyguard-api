@@ -35,11 +35,13 @@ model Users {
   updated_at DateTime @updatedAt
 
   Expenses Expenses[]
+  budget   Budgets[]
 }
 
 model Expenses {
-  id      String @id @default(uuid())
-  user_id String
+  id        String @id @default(uuid())
+  user_id   String
+  budget_id String
 
   type   expeses_type
   name   String
@@ -56,5 +58,22 @@ model Expenses {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  user Users @relation(fields: [user_id], references: [id])
+  user   Users   @relation(fields: [user_id], references: [id])
+  budget Budgets @relation(fields: [budget_id], references: [id])
+}
+
+model Budgets {
+  id      String @id @default(uuid())
+  user_id String
+
+  name    String
+  note    String @default("")
+
+  amount  Float
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  expenses Expenses[]
+  user     Users      @relation(fields: [user_id], references: [id])
 }

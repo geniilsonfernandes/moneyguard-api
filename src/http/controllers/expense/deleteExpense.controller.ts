@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import prisma from "../../../lib/prisma";
 
-async function updateExpensesController(
+async function deleteExpenseController(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
@@ -48,4 +48,4 @@ async function updateExpensesController(
   }
 }
 
-export default updateExpensesController;
+export default deleteExpenseController;
