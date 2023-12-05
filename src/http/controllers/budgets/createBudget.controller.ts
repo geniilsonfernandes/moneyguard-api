@@ -5,7 +5,10 @@ import prisma from "../../../lib/prisma";
 const createSchema = z.object({
   amount: z.number(),
   name: z.string(),
-  note: z.string().transform((value) => (value === "" ? "" : value)),
+  note: z
+    .string()
+    .optional()
+    .transform((value) => (value === "" ? "" : value)),
   user_id: z.string(),
 });
 

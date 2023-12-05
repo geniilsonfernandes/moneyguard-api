@@ -8,7 +8,10 @@ const updateSchema = z.object({
   name: z.string(),
   user_id: z.string(),
   duration: z.number(),
-  note: z.string().transform((value) => (value === "" ? "" : value)),
+  note: z
+    .string()
+    .optional()
+    .transform((value) => (value === "" ? "" : value)),
   payment_mode: z.enum(["ALL", "PARCEL"]),
   type: z.enum(["INCOME", "EXPENSE"]),
   periodicity_mode: z.enum(["ONCE", "MONTHLY", "FIXED"]),

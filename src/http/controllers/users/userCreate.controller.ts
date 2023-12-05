@@ -5,6 +5,7 @@ import prisma from "../../../lib/prisma";
 const createSchema = z.object({
   email: z.string(),
   name: z.string(),
+  clerk_id: z.string(),
 });
 
 async function userCreateController(
@@ -18,6 +19,7 @@ async function userCreateController(
       data: {
         email: bodyParsed.email,
         name: bodyParsed.name,
+        clerk_id: bodyParsed.clerk_id,
       },
     });
 

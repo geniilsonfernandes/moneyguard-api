@@ -10,7 +10,10 @@ const createExpenseSchema = z.object({
   name: z.string(),
   user_id: z.string(),
   duration: z.number(),
-  note: z.string().transform((value) => (value === "" ? "" : value)),
+  note: z
+    .string()
+    .optional()
+    .transform((value) => (value === "" ? "" : value)),
   payment_mode: z.enum(["ALL", "PARCEL"]),
   type: z.enum(["INCOME", "EXPENSE"]),
   periodicity_mode: z.enum(["ONCE", "MONTHLY", "FIXED"]),
@@ -71,6 +74,7 @@ async function createExpenseController(
     await prisma.expenses.create({
       data: {
         ...bodyParsed,
+        note: bodyParsed.note || "",
         period_dates: formattedPeriodDates,
       },
     });
