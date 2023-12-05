@@ -1,5 +1,5 @@
 import { fastify } from "fastify";
-import { budgetRoutes, expenseRoutes } from "./http/routes";
+import { budgetRoutes, expenseRoutes, usersRoutes } from "./http/routes";
 import { ZodError } from "zod";
 
 // add usecases
@@ -13,6 +13,7 @@ function buildServer() {
   // routes
   server.register(expenseRoutes);
   server.register(budgetRoutes);
+  server.register(usersRoutes);
 
   // error handler
   server.setErrorHandler((error, request, reply) => {

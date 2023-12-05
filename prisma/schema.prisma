@@ -30,6 +30,8 @@ model Users {
   id    String @id @default(uuid())
   name  String
   email String
+  
+  clerk_id String @unique
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -66,10 +68,10 @@ model Budgets {
   id      String @id @default(uuid())
   user_id String
 
-  name    String
-  note    String @default("")
+  name String
+  note String @default("")
 
-  amount  Float
+  amount Float
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
