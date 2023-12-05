@@ -1,5 +1,5 @@
 import { fastify } from "fastify";
-import { expenseRoutes } from "./http/routes";
+import { budgetRoutes, expenseRoutes } from "./http/routes";
 import { ZodError } from "zod";
 
 // add usecases
@@ -12,6 +12,7 @@ function buildServer() {
 
   // routes
   server.register(expenseRoutes);
+  server.register(budgetRoutes);
 
   // error handler
   server.setErrorHandler((error, request, reply) => {
@@ -22,8 +23,15 @@ function buildServer() {
       });
     }
 
+    if (error instanceof SyntaxError) {
+      reply.status(400).send({
+        message: "Invalid request body",
+        errors: error,
+      });
+    }
+
     reply.status(500).send({
-      message: "Internal server error",
+      message: "Internal server error: " + error,
       errors: error,
     });
   });

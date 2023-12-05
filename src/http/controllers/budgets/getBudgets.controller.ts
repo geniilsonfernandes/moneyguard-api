@@ -4,42 +4,34 @@ import prisma from "../../../lib/prisma";
 
 const getSchema = z.object({
   user_id: z.string(),
-  period: z.string(),
 });
 
-async function getExpensesController(
+async function getBudgetController(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
   const bodyParsed = getSchema.parse(request.query);
 
   try {
-    const expenses = await prisma.expenses.findMany({
+    const budgets = await prisma.budgets.findMany({
       where: {
         user_id: bodyParsed.user_id,
-        AND: [
-          {
-            period_dates: {
-              has: bodyParsed.period,
-            },
-          },
-        ],
       },
     });
 
-    if (expenses.length === 0) {
+    if (budgets.length === 0) {
       return reply.code(404).send({
-        message: "No expenses found",
+        message: "No budgets found",
       });
     }
 
     reply.code(200).send({
-      expenses: expenses,
-      count: expenses.length,
+      expenses: budgets,
+      count: budgets.length,
     });
   } catch (err) {
     throw err;
   }
 }
 
-export default getExpensesController;
+export default getBudgetController;

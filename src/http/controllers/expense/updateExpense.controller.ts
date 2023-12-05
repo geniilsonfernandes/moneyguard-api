@@ -8,7 +8,7 @@ const updateSchema = z.object({
   name: z.string(),
   user_id: z.string(),
   duration: z.number(),
-  note: z.string(),
+  note: z.string().transform((value) => (value === "" ? "" : value)),
   payment_mode: z.enum(["ALL", "PARCEL"]),
   type: z.enum(["INCOME", "EXPENSE"]),
   periodicity_mode: z.enum(["ONCE", "MONTHLY", "FIXED"]),
@@ -53,16 +53,7 @@ async function updateExpensesController(
         id: expense_id,
       },
       data: {
-        amount: bodyParsed.amount,
-        due_date: bodyParsed.due_date,
-        name: bodyParsed.name,
-        user_id: bodyParsed.user_id,
-        duration: bodyParsed.duration,
-        note: bodyParsed.note,
-        payment_mode: bodyParsed.payment_mode,
-        type: bodyParsed.type,
-        periodicity_mode: bodyParsed.periodicity_mode,
-        period_dates: bodyParsed.period_dates,
+        ...bodyParsed,
       },
     });
 

@@ -6,10 +6,11 @@ import prisma from "../../../lib/prisma";
 const createExpenseSchema = z.object({
   amount: z.number(),
   due_date: z.string(),
+  budget_id: z.string(),
   name: z.string(),
   user_id: z.string(),
   duration: z.number(),
-  note: z.string(),
+  note: z.string().transform((value) => (value === "" ? "" : value)),
   payment_mode: z.enum(["ALL", "PARCEL"]),
   type: z.enum(["INCOME", "EXPENSE"]),
   periodicity_mode: z.enum(["ONCE", "MONTHLY", "FIXED"]),
@@ -28,7 +29,45 @@ async function createExpenseController(
     return dayjs(date, "MM/YYYY").startOf("month").format("MM/YYYY");
   });
 
+  if (bodyParsed.user_id === undefined) {
+    return reply.code(400).send({
+      message: "Missing user id",
+      code: "MISSING_USER_ID",
+    });
+  }
+
+  if (bodyParsed.budget_id === undefined) {
+    return reply.code(400).send({
+      message: "Missing budget id",
+      code: "MISSING_BUDGET_ID",
+    });
+  }
+
   try {
+    const findBudget = await prisma.budgets.findUnique({
+      where: {
+        id: bodyParsed.budget_id,
+      },
+    });
+
+    if (!findBudget) {
+      return reply.code(404).send({
+        message: "Budget not found",
+      });
+    }
+
+    const findUser = await prisma.users.findUnique({
+      where: {
+        id: bodyParsed.user_id,
+      },
+    });
+
+    if (!findUser) {
+      return reply.code(404).send({
+        message: "User not found",
+      });
+    }
+
     await prisma.expenses.create({
       data: {
         ...bodyParsed,
