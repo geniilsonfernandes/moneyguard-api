@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { z } from "zod";
 import { FastifyReply, FastifyRequest } from "fastify";
 import prisma from "../../../lib/prisma";
@@ -19,18 +20,32 @@ async function createExpenseController(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const bodyParsed = createExpenseSchema.parse(request.body);
+  const { period_dates, ...bodyParsed } = createExpenseSchema.parse(
+    request.body
+  );
+
+  const formattedPeriodDates = period_dates.map((date) => {
+    return dayjs(date, "MM/YYYY").startOf("month").format("MM/YYYY");
+  });
 
   try {
     await prisma.expenses.create({
-      data: bodyParsed,
+      data: {
+        ...bodyParsed,
+        period_dates: formattedPeriodDates,
+      },
     });
 
     reply.code(201).send({
       message: "Expense created",
-      expense: request.body,
+      expense: {
+        ...bodyParsed,
+        period_dates: formattedPeriodDates,
+      },
     });
   } catch (err) {
+    console.log(err);
+
     throw err;
   }
 }

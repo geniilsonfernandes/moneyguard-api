@@ -4,6 +4,7 @@ import prisma from "../../../lib/prisma";
 
 const createExpenseSchema = z.object({
   user_id: z.string(),
+  period: z.string(),
 });
 
 async function getExpensesController(
@@ -16,6 +17,13 @@ async function getExpensesController(
     const expenses = await prisma.expenses.findMany({
       where: {
         user_id: bodyParsed.user_id,
+        AND: [
+          {
+            period_dates: {
+              has: bodyParsed.period,
+            },
+          },
+        ],
       },
     });
 
@@ -27,6 +35,7 @@ async function getExpensesController(
 
     reply.code(200).send({
       expenses: expenses,
+      count: expenses.length,
     });
   } catch (err) {
     throw err;
