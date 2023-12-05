@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+  money-api:
+    container_name: money-api-db
+    image: postgres:13
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: money-api_db
+    ports:
+      - 5432:5432
+  
+

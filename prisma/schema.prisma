@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum expeses_type {
+  INCOME
+  EXPENSE
+}
+
+enum periodicity_mode {
+  ONCE
+  MONTHLY
+  FIXED
+}
+
+enum payment_mode {
+  ALL
+  PARCEL
+}
+
+model Users {
+  id    String @id @default(uuid())
+  name  String
+  email String
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  Expenses Expenses[]
+}
+
+model Expenses {
+  id      String @id @default(uuid())
+  user_id String
+
+  type   expeses_type
+  name   String
+  note   String
+  amount Float
+
+  payment_mode     payment_mode
+  periodicity_mode periodicity_mode
+
+  due_date     String
+  period_dates String[]
+  duration     Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user Users @relation(fields: [user_id], references: [id])
+}
