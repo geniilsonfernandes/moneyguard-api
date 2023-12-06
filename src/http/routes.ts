@@ -13,6 +13,7 @@ import deleteBudgetController from "./controllers/budgets/deleteBudget.controlle
 
 // users controllers
 import userCreateController from "./controllers/users/userCreate.controller";
+import getUserController from "./controllers/users/getUser.controller";
 
 async function expenseRoutes(app: FastifyInstance) {
   // expenses
@@ -32,6 +33,7 @@ async function budgetRoutes(app: FastifyInstance) {
 
 async function usersRoutes(app: FastifyInstance) {
   app.post("/users", userCreateController);
+  app.get("/users/:id", getUserController);
 }
 
 export { expenseRoutes, budgetRoutes, usersRoutes };

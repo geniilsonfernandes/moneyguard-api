@@ -27,12 +27,6 @@ async function getExpensesController(
       },
     });
 
-    if (expenses.length === 0) {
-      return reply.code(404).send({
-        message: "No expenses found",
-      });
-    }
-
     reply.code(200).send({
       expenses: expenses,
       count: expenses.length,

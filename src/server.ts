@@ -1,13 +1,18 @@
 import { fastify } from "fastify";
 import { budgetRoutes, expenseRoutes, usersRoutes } from "./http/routes";
 import { ZodError } from "zod";
+import cors from "@fastify/cors";
 
 // add usecases
 function buildServer() {
+  // quero saber quais configuraçoes o fastify tem
   const server = fastify();
 
-  server.get("/", async (request, reply) => {
-    return { hello: "world" };
+  server.register(cors, {
+    origin: "*", // Altere '*' para o domínio ou origens permitidos que você deseja.
+    methods: ["GET", "POST", "PUT", "DELETE"], // Métodos HTTP permitidos
+    allowedHeaders: ["Content-Type", "Authorization"], // Cabeçalhos permitidos
+    preflightContinue: false, // Responder automaticamente às solicitações OPTIONS preflight
   });
 
   // routes

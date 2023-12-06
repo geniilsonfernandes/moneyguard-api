@@ -15,6 +15,19 @@ async function userCreateController(
   const bodyParsed = createSchema.parse(request.body);
 
   try {
+    const findUser = await prisma.users.findUnique({
+      where: {
+        clerk_id: bodyParsed.clerk_id,
+      },
+    });
+
+    if (findUser) {
+      return reply.code(404).send({
+        message: "User already exists",
+        user: findUser,
+      });
+    }
+
     const user = await prisma.users.create({
       data: {
         email: bodyParsed.email,
