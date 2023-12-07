@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { FastifyReply, FastifyRequest } from "fastify";
 import prisma from "../../../lib/prisma";
+import dayjs from "dayjs";
 
 const getSchema = z.object({
   user_id: z.string(),
@@ -12,18 +13,40 @@ async function getExpensesController(
   reply: FastifyReply
 ) {
   const bodyParsed = getSchema.parse(request.query);
+  console.log(dayjs(`01/${bodyParsed.period}`).toString());
 
   try {
     const expenses = await prisma.expenses.findMany({
       where: {
         user_id: bodyParsed.user_id,
-        AND: [
+        OR: [
           {
             period_dates: {
               has: bodyParsed.period,
             },
           },
+          {
+            AND: [
+              {
+                periodicity_mode: {
+                  equals: "FIXED",
+                },
+              },
+              {
+                OR: [
+                  {
+                    due_date: {
+                      lte: dayjs(`01/${bodyParsed.period}`).toISOString(),
+                    },
+                  },
+                ],
+              },
+            ],
+          },
         ],
+      },
+      include: {
+        budget: true,
       },
     });
 

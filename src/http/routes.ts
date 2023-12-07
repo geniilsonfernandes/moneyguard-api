@@ -14,6 +14,7 @@ import deleteBudgetController from "./controllers/budgets/deleteBudget.controlle
 // users controllers
 import userCreateController from "./controllers/users/userCreate.controller";
 import getUserController from "./controllers/users/getUser.controller";
+import getExpenseController from "./controllers/expense/getExpense.controller";
 
 async function expenseRoutes(app: FastifyInstance) {
   // expenses
@@ -21,6 +22,7 @@ async function expenseRoutes(app: FastifyInstance) {
   app.post("/expenses/:id", updateExpensesController);
   app.delete("/expenses/:id", deleteExpenseController);
   app.get("/expenses", getExpensesController);
+  app.get("/expense/:id", getExpenseController);
 }
 
 async function budgetRoutes(app: FastifyInstance) {

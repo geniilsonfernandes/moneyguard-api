@@ -26,7 +26,7 @@ async function getBudgetController(
     }
 
     reply.code(200).send({
-      expenses: budgets,
+      budgets: budgets,
       count: budgets.length,
     });
   } catch (err) {
