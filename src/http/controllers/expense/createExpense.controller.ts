@@ -29,7 +29,7 @@ async function createExpenseController(
   );
 
   const formattedPeriodDates = period_dates.map((date) => {
-    return dayjs(date, "MM/YYYY").startOf("month").format("MM/YYYY");
+    return dayjs(date).startOf("month").format("MM/YYYY");
   });
 
   if (bodyParsed.user_id === undefined) {
@@ -75,7 +75,7 @@ async function createExpenseController(
       data: {
         ...bodyParsed,
         note: bodyParsed.note || "",
-        period_dates: formattedPeriodDates,
+        period_dates: period_dates,
       },
     });
 
@@ -83,7 +83,7 @@ async function createExpenseController(
       message: "Expense created",
       expense: {
         ...bodyParsed,
-        period_dates: formattedPeriodDates,
+        period_dates: period_dates,
       },
     });
   } catch (err) {

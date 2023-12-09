@@ -27,11 +27,11 @@ enum payment_mode {
 }
 
 model Users {
-  id    String @id @default(uuid())
-  name  String
-  email String
-  
-  clerk_id String @unique
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

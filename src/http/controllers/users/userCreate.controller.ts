@@ -1,11 +1,13 @@
+import { hash } from "bcrypt";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import prisma from "../../../lib/prisma";
+import { NotCreatedError, UserAlreadyExists } from "../../../utils/errors";
 
 const createSchema = z.object({
   email: z.string(),
   name: z.string(),
-  clerk_id: z.string(),
+  password: z.string(),
 });
 
 async function userCreateController(
@@ -15,24 +17,23 @@ async function userCreateController(
   const bodyParsed = createSchema.parse(request.body);
 
   try {
-    const findUser = await prisma.users.findUnique({
+    const userExists = await prisma.users.findFirst({
       where: {
-        clerk_id: bodyParsed.clerk_id,
+        email: bodyParsed.email,
       },
     });
 
-    if (findUser) {
-      return reply.code(200).send({
-        message: "User already exists",
-        user: findUser,
-      });
+    if (userExists) {
+      throw new UserAlreadyExists();
     }
+
+    const hashedPassword = await hash(bodyParsed.password, 8);
 
     const user = await prisma.users.create({
       data: {
         email: bodyParsed.email,
         name: bodyParsed.name,
-        clerk_id: bodyParsed.clerk_id,
+        password: hashedPassword,
       },
     });
 
@@ -52,17 +53,24 @@ async function userCreateController(
     });
 
     if (!user) {
-      return reply.code(404).send({
-        message: "User not created",
-      });
+      throw new NotCreatedError("User not created");
     }
 
     reply.code(200).send({
       message: "User created",
-      user: user,
-      budget: seedBudget,
+      user: {
+        ...user,
+        password: undefined,
+      },
     });
   } catch (err) {
+    if (err instanceof UserAlreadyExists || err instanceof NotCreatedError) {
+      return reply.code(err.code).send({
+        error: err,
+        message: err.message,
+      });
+    }
+
     throw err;
   }
 }

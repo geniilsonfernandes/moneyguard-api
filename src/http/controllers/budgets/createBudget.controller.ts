@@ -38,7 +38,7 @@ async function createBudgetController(
       });
     }
 
-    const budget = await prisma.budgets.create({
+    await prisma.budgets.create({
       data: {
         amount: bodyParsed.amount,
         name: bodyParsed.name,
@@ -46,9 +46,16 @@ async function createBudgetController(
         user_id: bodyParsed.user_id,
       },
     });
+
+    const allBudgets = await prisma.budgets.findMany({
+      where: {
+        user_id: bodyParsed.user_id,
+      },
+    });
+
     reply.code(200).send({
       message: "Budget created",
-      budget: budget,
+      budgets: allBudgets,
     });
   } catch (err) {
     throw err;

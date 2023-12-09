@@ -1,7 +1,14 @@
 import { fastify } from "fastify";
-import { budgetRoutes, expenseRoutes, usersRoutes } from "./http/routes";
+import {
+  authRoutes,
+  budgetRoutes,
+  expenseRoutes,
+  usersRoutes,
+} from "./http/routes";
 import { ZodError } from "zod";
 import cors from "@fastify/cors";
+import fastifyJwt from "@fastify/jwt";
+import { env } from "./env";
 
 // add usecases
 function buildServer() {
@@ -14,11 +21,17 @@ function buildServer() {
     allowedHeaders: ["Content-Type", "Authorization"], // Cabeçalhos permitidos
     preflightContinue: false, // Responder automaticamente às solicitações OPTIONS preflight
   });
+  server.register(fastifyJwt, {
+    secret: env.JWT_SECRET,
+  });
 
   // routes
   server.register(expenseRoutes);
   server.register(budgetRoutes);
   server.register(usersRoutes);
+  server.register(authRoutes, {
+    prefix: "/auth",
+  });
 
   // error handler
   server.setErrorHandler((error, request, reply) => {

@@ -13,7 +13,6 @@ async function getExpensesController(
   reply: FastifyReply
 ) {
   const bodyParsed = getSchema.parse(request.query);
-  console.log(dayjs(`01/${bodyParsed.period}`).toString());
 
   try {
     const expenses = await prisma.expenses.findMany({

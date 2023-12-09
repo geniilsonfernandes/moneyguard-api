@@ -15,8 +15,12 @@ import deleteBudgetController from "./controllers/budgets/deleteBudget.controlle
 import userCreateController from "./controllers/users/userCreate.controller";
 import getUserController from "./controllers/users/getUser.controller";
 import getExpenseController from "./controllers/expense/getExpense.controller";
+import loginController from "./controllers/auth/login.controller";
+import { verifyJwtMid } from "./middlewares/verifyJwtMid";
+import refreshController from "./controllers/auth/refresh.controller";
 
 async function expenseRoutes(app: FastifyInstance) {
+  app.addHook("onRequest", verifyJwtMid);
   // expenses
   app.post("/expenses", createExpenseController);
   app.post("/expenses/:id", updateExpensesController);
@@ -26,6 +30,7 @@ async function expenseRoutes(app: FastifyInstance) {
 }
 
 async function budgetRoutes(app: FastifyInstance) {
+  app.addHook("onRequest", verifyJwtMid);
   // budgets
   app.post("/budgets", createBudgetController);
   app.post("/budgets/:id", updateBudgetController);
@@ -38,4 +43,9 @@ async function usersRoutes(app: FastifyInstance) {
   app.get("/users/:id", getUserController);
 }
 
-export { expenseRoutes, budgetRoutes, usersRoutes };
+async function authRoutes(app: FastifyInstance) {
+  app.post("/login", loginController);
+  app.post("/refresh", refreshController);
+}
+
+export { expenseRoutes, budgetRoutes, usersRoutes, authRoutes };
