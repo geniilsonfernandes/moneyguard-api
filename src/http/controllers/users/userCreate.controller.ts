@@ -3,6 +3,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import prisma from "../../../lib/prisma";
 import { NotCreatedError, UserAlreadyExists } from "../../../utils/errors";
+import { generateJWT } from "../../../utils/authHelpers";
 
 const createSchema = z.object({
   email: z.string(),
@@ -37,7 +38,7 @@ async function userCreateController(
       },
     });
 
-    const seedBudget = await prisma.budgets.createMany({
+    await prisma.budgets.createMany({
       data: [
         {
           name: "Alimentação",
@@ -55,12 +56,21 @@ async function userCreateController(
     if (!user) {
       throw new NotCreatedError("User not created");
     }
+    const { refreshToken, token } = await generateJWT(reply, {
+      email: user.email,
+      id: user.id,
+      name: user.name,
+    });
 
     reply.code(200).send({
       message: "User created",
       user: {
         ...user,
         password: undefined,
+      },
+      auth: {
+        token,
+        refreshToken,
       },
     });
   } catch (err) {
