@@ -9,6 +9,7 @@ const createSchema = z.object({
   email: z.string(),
   name: z.string(),
   password: z.string(),
+  monthly_budget: z.number(),
 });
 
 async function userCreateController(
@@ -35,28 +36,37 @@ async function userCreateController(
         email: bodyParsed.email,
         name: bodyParsed.name,
         password: hashedPassword,
+        budget: {
+          createMany: {
+            data: [
+              {
+                name: "Alimentação",
+                amount: 1000,
+              },
+              {
+                name: "Entretenimento",
+                amount: 1000,
+              },
+            ],
+          },
+        },
+        settings: {
+          create: {
+            monthly_budget: 1000,
+          },
+        },
       },
-    });
-
-    await prisma.budgets.createMany({
-      data: [
-        {
-          name: "Alimentação",
-          amount: 1000,
-          user_id: user.id,
-        },
-        {
-          name: "Entretenimento",
-          amount: 1000,
-          user_id: user.id,
-        },
-      ],
+      include: {
+        budget: true,
+        settings: true,
+      },
     });
 
     if (!user) {
       throw new NotCreatedError("User not created");
     }
-    const { refreshToken, token } = await generateJWT(reply, {
+
+    const { refresh_token, token } = await generateJWT(reply, {
       email: user.email,
       id: user.id,
       name: user.name,
@@ -70,7 +80,7 @@ async function userCreateController(
       },
       auth: {
         token,
-        refreshToken,
+        refresh_token,
       },
     });
   } catch (err) {

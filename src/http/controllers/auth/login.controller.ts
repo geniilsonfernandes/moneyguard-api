@@ -21,6 +21,10 @@ async function loginController(request: FastifyRequest, reply: FastifyReply) {
       where: {
         email: bodyParsed.email,
       },
+      include: {
+        budget: true,
+        settings: true,
+      },
     });
 
     if (!user) {
@@ -36,13 +40,22 @@ async function loginController(request: FastifyRequest, reply: FastifyReply) {
       throw new InvalidEmailOrPasswordError();
     }
 
-    const { refreshToken, token } = await generateJWT(reply, user);
+    const { refresh_token, token } = await generateJWT(reply, {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    });
 
     reply.code(200).send({
-      user,
       message: "User logged in",
-      token,
-      refreshToken,
+      user: {
+        ...user,
+        password: undefined,
+      },
+      auth: {
+        token,
+        refresh_token,
+      },
     });
   } catch (err) {
     if (

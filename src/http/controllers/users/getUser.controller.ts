@@ -3,7 +3,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import prisma from "../../../lib/prisma";
 
 const getSchema = z.object({
-  clerk_id: z.string(),
+  user_id: z.string(),
 });
 
 async function getUserController(request: FastifyRequest, reply: FastifyReply) {
@@ -12,7 +12,7 @@ async function getUserController(request: FastifyRequest, reply: FastifyReply) {
   try {
     const user = await prisma.users.findFirst({
       where: {
-        clerk_id: bodyParsed.clerk_id,
+        id: bodyParsed.user_id,
       },
     });
 

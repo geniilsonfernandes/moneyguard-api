@@ -36,7 +36,7 @@ export async function generateJWT(
 
   return {
     token,
-    refreshToken,
+    refresh_token: refreshToken,
   };
 }
 

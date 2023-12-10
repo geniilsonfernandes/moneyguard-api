@@ -27,17 +27,29 @@ enum payment_mode {
 }
 
 model Users {
-  id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  password String
+  id          String   @id @default(uuid())
+  name        String
+  email       String   @unique
+  password    String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  settings_id String?
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  Expenses Expenses[]
+  expenses Expenses[]
   budget   Budgets[]
-  Settings Settings[]
+
+  settings Settings?
+}
+
+model Settings {
+  id             String   @id @default(uuid())
+  user_id        String   @unique
+  monthly_budget Float    @default(0)
+  color_theme    String   @default("light")
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  user Users @relation(fields: [user_id], references: [id])
 }
 
 model Expenses {
@@ -78,17 +90,4 @@ model Budgets {
 
   expenses Expenses[]
   user     Users      @relation(fields: [user_id], references: [id])
-}
-
-model Settings {
-  id      String @id @default(uuid())
-  user_id String
-
-  monthly_budget Float @default(0)
-  color_theme    String @default("light")
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  user Users @relation(fields: [user_id], references: [id])
 }
