@@ -52,7 +52,7 @@ async function userCreateController(
         },
         settings: {
           create: {
-            monthly_budget: 1000,
+            monthly_budget: bodyParsed.monthly_budget,
           },
         },
       },
