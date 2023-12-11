@@ -5,7 +5,7 @@
   <p align="center" id="menu">
     <a href="#sobre-o-projeto">Sobre o projeto</a>
     <a href="#stacks-utilizadas">Stacks utilizadas</a>
-        <a href="#rotas">rotas</a>
+        <a href="#rotas">Rotas</a>
     <a href="#instalação-e-execução-local">Instalação e execução local</a>
   </p>
 
@@ -24,40 +24,79 @@
     <img src="https://skillicons.dev/icons?i=git,docker,ts,netlify,nodejs,postgres,prisma,react,redux,supabase,tailwind,figma" />
   </a>
 </p>
-
-  <h3  align="center"> Rotas de Despesas (Expenses)</h3>
-
+ <h2  id="rotas' align="center"> Rotas</h2>
+ 
+  <h3  align="center"> Rotas de Despesas (Expenses)</h2>
     ## Autenticação Necessária: Sim
+  <ul>
+    <li>POST /expenses: Cria uma nova despesa.</li>
+    <li>POST /expenses/:id: Atualiza uma despesa específica.</li>
+    <li>DELETE /expenses/:id: Deleta uma despesa específica.</li>
+    <li>GET /expenses: Retorna todas as despesas.</li>
+    <li>GET /expenses: Retorna todas as despesas.</li>
+    <li>GET /expense/:id: Retorna uma despesa específica.</li>
+  </ul>
 
-<ul>
-<li>POST /expenses: Cria uma nova despesa.</li>
-<li>POST /expenses/:id: Atualiza uma despesa específica.</li>
-<li>
-DELETE /expenses/:id: Deleta uma despesa específica.</li>
-<li>GET /expenses: Retorna todas as despesas.</li>
-<li>GET /expenses: Retorna todas as despesas.</li>
-<li>GET /expense/:id: Retorna uma despesa específica.</li>
-</ul>
+   <h3  align="center">Rotas de Orçamento (Budgets)</h2>
+   
+    ## Autenticação Necessária: Sim
+  
+  <ul>
+    <li>POST /budgets: Cria um novo orçamento.</li>
+    <li>POST /budgets/:id: Atualiza um orçamento específico.</li>
+    <li>DELETE /budgets/:id: Deleta um orçamento específico.</li>
+    <li>GET /budgets: Retorna todos os orçamentos.</li>
+  </ul>
+  
+  <h3  align="center">Rotas de Usuários (Users)</h2>
+  
+    ## Autenticação Necessária: Não
+  
+  <ul>
+    <li>POST /users: Cria um novo usuário.</li>
+    <li>GET /users/:id: Retorna informações de um usuário específico.</li>
+  </ul>
+
+  <h3  align="center">Rotas de Autenticação (Auth)</h2>
+  
+    ## Autenticação Necessária: Não
+  
+  <ul>
+    <li>POST /login: Autentica um usuário e gera um token JWT.</li>
+    <li>POST /refresh: Atualiza o token JWT.</li>
+  </ul>
+
+
 
   <h2 id="instalação-e-execução-local" align="center"> Instalação e execução local </h2>
   
   <p>
-  Para executar esta aplicação, é necessário ter o Docker. Além disso, é preciso executar a API em segundo plano, disponível neste 
-     <a href="https://github.com/geniilsonfernandes/moneyguard-api">repositório da Money Guard API.</a>
+  Para executar esta aplicação, é necessário ter o Docker. 
 
-<b>Siga as instruções no repositório acima para executar a API.</b>
+<b>Siga as instruções para executar a API.</b>
 
   </p>
 
-  <p>
-Após executar a API, siga os passos abaixo:
-  </p>
-  
+  Configurando o  .env
+    
+  ```
+ #  money-db , é os mesmo que vai estar no docker compose
+DATABASE_URL="postgresql://root:root@localhost:5432/money-api_db"
+PORT=5000
+NODE_ENV="dev"
+JWT_SECRET={coloque qulaque coisa}
+
+```
+
+  agora podemos seguir
   
   ```
   npm i
-
-npm run dev
+  npm run db:docker
+  npm run prisma:generate
+  npm run prisma:push
+  
+  npm run dev
 
 ```
 
@@ -76,4 +115,3 @@ O aplicativo estará disponível em http://localhost:5173/. Siga as instruções
     Email - geniilsonfernandes@gmail.com
   </li>
 </ul>
-```
