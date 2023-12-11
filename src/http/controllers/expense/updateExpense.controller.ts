@@ -8,6 +8,7 @@ const updateSchema = z.object({
   name: z.string(),
   user_id: z.string(),
   duration: z.number(),
+  budget_id: z.string(),
   note: z
     .string()
     .optional()
